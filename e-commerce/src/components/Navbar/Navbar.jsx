@@ -9,22 +9,28 @@ import {
   IconButton,
 } from "@mui/material";
 
-import useStyles from "./styles";
-
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-const Navbar = () => {
-  const classes = useStyles();
+const Navbar = ({ totalItems }) => {
   return (
     <>
-      <AppBar position="fixed" className={classes.appBar} color="inherit">
+      <AppBar position="fixed" color="inherit" sx={{ mb: 5 }}>
         <Toolbar>
-          <Typography variant="h6" className={classes.title} color="inherit">
-            <img src="" alt="My Duka" height="25px" className={classes.image} />
+          <Typography variant="h6" color="inherit">
+            My Duka
           </Typography>
-          <div className={classes.grow}>
-            <div className={classes.button}>
-              <IconButton aria-label="Show Cart Items" color="inherit">
-                <Badge badgeContent={2} color="secondary">
+          <div>
+            <div
+              className="flex justify-end"
+              sx={{ display: "flex", justifyContent: "flex-end" }}
+            >
+              <IconButton
+                aria-label="Show Cart Items"
+                color="inherit"
+                className=""
+                display="flex"
+                justify-content="flex-end"
+              >
+                <Badge badgeContent={totalItems} color="secondary">
                   <ShoppingCartIcon />
                 </Badge>
               </IconButton>

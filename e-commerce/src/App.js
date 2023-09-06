@@ -5,6 +5,7 @@ import Cart from "./components/Cart/Cart";
 import commerce from "./lib/commerce";
 import { useState, useEffect } from "react";
 import Skeleton from "@mui/material/Skeleton";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   // fetch all products from commerce.js api
@@ -57,8 +58,22 @@ function App() {
   return (
     <div>
       {!cart ? <Skeleton /> : <Navbar totalItems={cart.total_items} />}
-      {/* <Products products={products} onAddToCart={handleAddToCart} /> */}
-      <Cart cart={cart} cartItems={cartItems} />
+      <Router>
+        <Routes>
+          {/* Home Page */}
+          <Route
+            path="/"
+            element={
+              <Products products={products} onAddToCart={handleAddToCart} />
+            }
+          />
+          {/*  */}
+          <Route
+            path="/cart"
+            element={<Cart cart={cart} cartItems={cartItems} />}
+          />
+        </Routes>
+      </Router>
     </div>
   );
 }

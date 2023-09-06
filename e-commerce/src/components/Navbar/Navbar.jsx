@@ -8,6 +8,7 @@ import {
   Menu,
   IconButton,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 const Navbar = ({ totalItems }) => {
@@ -18,6 +19,7 @@ const Navbar = ({ totalItems }) => {
           <Typography variant="h6" color="inherit">
             My Duka
           </Typography>
+
           <div>
             <div
               className="flex justify-end"

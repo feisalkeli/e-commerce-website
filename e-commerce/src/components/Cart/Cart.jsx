@@ -2,13 +2,27 @@ import React from "react";
 import { Container, Typography, Button, Grid } from "@mui/material";
 import { Skeleton } from "@mui/material";
 import CartItem from "./CartItem/CartItem";
-
-const Cart = ({ cart, cartItems }) => {
+import { Link } from "react-router-dom";
+const Cart = ({
+  cart,
+  cartItems,
+  handleUpdateCartQty,
+  handleRemoveFromCart,
+  handleEmptyCart,
+}) => {
   const length = cartItems.length;
+  console.log(cart, "mycart");
 
   const EmptyCart = () => (
     <Typography variant="h5">
       You Have No Items In Your Shopping Cart,Start Shopping Now
+      <Link to="/">
+        <div>
+          <Button variant="contained" type="button" color="primary">
+            Go Back
+          </Button>
+        </div>
+      </Link>
     </Typography>
   );
   const FilledCart = () => (
@@ -22,9 +36,15 @@ const Cart = ({ cart, cartItems }) => {
           }}
         >
           <Grid container spacing={2}>
+            <Typography variant="h3" sx={{ textAlign: "center" }}></Typography>
             {cart?.line_items?.map((item) => (
-              <Grid key={item.id} item xs={12} sm={4} sx={{ mt: 5, mx: 4 }}>
-                <CartItem item={item} />
+              <Grid key={item.id} item xs={10} sm={4} sx={{ mt: 5, mx: 4 }}>
+                {/* Cart Items */}
+                <CartItem
+                  item={item}
+                  onUpdateCartQty={handleUpdateCartQty}
+                  onRemoveCartQty={handleRemoveFromCart}
+                />
               </Grid>
             ))}
           </Grid>
@@ -35,7 +55,13 @@ const Cart = ({ cart, cartItems }) => {
 
       <div className="flex ">
         <Typography variant="h4" sx={{ mt: 5 }}>
-          SubTotal:{cart.subtotal.formatted_with_symbol}
+          SubTotal:
+          {/* {cart?.subtotal.formatted_with_symbol ? (
+            cart.subtotal.formatted_with_symbol
+          ) : (
+            <Skeleton />
+          )} */}
+          {cart ? cart.subtotal.formatted_with_symbol : <Skeleton />}
         </Typography>
         <Button
           size="large"
@@ -43,6 +69,7 @@ const Cart = ({ cart, cartItems }) => {
           variant="contained"
           color="secondary"
           sx={{ mr: 3, minWidth: "150px" }}
+          onClick={handleEmptyCart}
         >
           EmptyCart
         </Button>

@@ -48,6 +48,24 @@ function App() {
     setCartItems(contents);
   };
 
+  //Update Cart Quantity
+
+  const handleUpdateCartQty = async (productId, quantity) => {
+    const updatedItem = await commerce.cart.update(productId, { quantity });
+    setCart(updatedItem.cart);
+  };
+  //Remove Items From Cart
+  const handleRemoveFromCart = async (productId) => {
+    const { cart } = await commerce.cart.remove(productId);
+    setCart(cart);
+  };
+
+  //Empty The Cart
+
+  const handleEmptyCart = async () => {
+    const { cart } = await commerce.cart.empty();
+    setCart(cart);
+  };
   //Render the products and cart once the component mounts
   useEffect(() => {
     fetchProducts();
@@ -57,7 +75,7 @@ function App() {
 
   return (
     <div>
-      {!cart ? <Skeleton /> : <Navbar totalItems={cart.total_items} />}
+      {cart && <Navbar totalItems={cart.total_items} />}
       <Router>
         <Routes>
           {/* Home Page */}
@@ -70,7 +88,15 @@ function App() {
           {/*  */}
           <Route
             path="/cart"
-            element={<Cart cart={cart} cartItems={cartItems} />}
+            element={
+              <Cart
+                cart={cart}
+                cartItems={cartItems}
+                handleUpdateCartQty={handleUpdateCartQty}
+                handleEmptyCart={handleEmptyCart}
+                handleRemoveFromCart={handleRemoveFromCart}
+              />
+            }
           />
         </Routes>
       </Router>

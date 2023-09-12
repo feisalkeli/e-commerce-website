@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-const CartItem = ({ item }) => {
+const CartItem = ({ item, onUpdateCartQty, onRemoveCartQty }) => {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
@@ -25,13 +25,29 @@ const CartItem = ({ item }) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">
+        <Button
+          size="small"
+          onClick={() => onUpdateCartQty(item.id, item.quantity - 1)}
+        >
           <RemoveIcon />
         </Button>
         <Typography variant="h5">{item.quantity}</Typography>
-        <Button size="small">
+        <Button
+          size="small"
+          onClick={() => onUpdateCartQty(item.id, item.quantity + 1)}
+        >
           <AddIcon />
         </Button>
+        <div>
+          <Button
+            variant="contained"
+            type="button"
+            color="secondary"
+            onClick={() => onRemoveCartQty(item.id)}
+          >
+            Remove
+          </Button>
+        </div>
       </CardActions>
     </Card>
   );

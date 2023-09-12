@@ -19,6 +19,9 @@ const Navbar = ({ totalItems }) => {
           <Typography variant="h6" color="inherit">
             My Duka
           </Typography>
+          {/* <Link component={RouterLink} to="/cart">
+          
+          </Link> */}
 
           <div>
             <div
@@ -31,9 +34,13 @@ const Navbar = ({ totalItems }) => {
                 className=""
                 display="flex"
                 justify-content="flex-end"
+                // component={Link}
+                // to="/cart"
               >
                 <Badge badgeContent={totalItems} color="secondary">
-                  <ShoppingCartIcon />
+                  <a href="/cart">
+                    <ShoppingCartIcon />
+                  </a>
                 </Badge>
               </IconButton>
             </div>

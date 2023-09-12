@@ -38,6 +38,7 @@ const Navbar = ({ totalItems }) => {
                 // to="/cart"
               >
                 <Badge badgeContent={totalItems} color="secondary">
+                  {/* Used a tag to prevent useContext bug */}
                   <a href="/cart">
                     <ShoppingCartIcon />
                   </a>

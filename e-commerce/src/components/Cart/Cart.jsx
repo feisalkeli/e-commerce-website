@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Typography, Button, Grid } from "@mui/material";
+import Commerce from "@chec/commerce.js";
 import { Skeleton } from "@mui/material";
 import CartItem from "./CartItem/CartItem";
 import { Link } from "react-router-dom";
@@ -12,6 +13,24 @@ const Cart = ({
 }) => {
   const length = cartItems.length;
   console.log(cart, "mycart");
+  ///Fetch Cart contetnts first to prevent bugs
+
+  const [loading, setLoading] = useState(true);
+  const [cartContents, setCartContents] = useState([]);
+
+  useEffect(() => {
+    const fetchCartContents = async () => {
+      try {
+        const contents = await Commerce.cart.contents();
+        setCartContents(contents);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching cart contents: ", error);
+      }
+    };
+
+    fetchCartContents();
+  }, []);
 
   const EmptyCart = () => (
     <Typography variant="h5">
@@ -27,7 +46,7 @@ const Cart = ({
   );
   const FilledCart = () => (
     <>
-      {cart ? (
+      {cartContents ? (
         <Grid
           container
           spacing={3}
@@ -74,7 +93,13 @@ const Cart = ({
           EmptyCart
         </Button>
 
-        <Button size="large" type="button" variant="contained" color="primary">
+        <Button
+          // component={(Link = "/checkout")}
+          size="large"
+          type="button"
+          variant="contained"
+          color="primary"
+        >
           Checkout
         </Button>
         <br />

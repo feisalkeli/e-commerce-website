@@ -6,6 +6,7 @@ import commerce from "./lib/commerce";
 import { useState, useEffect } from "react";
 import Skeleton from "@mui/material/Skeleton";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Checkout from "./components/CheckoutForm/Checkout/Checkout";
 
 function App() {
   // fetch all products from commerce.js api
@@ -75,7 +76,11 @@ function App() {
 
   return (
     <div>
-      {cart && <Navbar totalItems={cart.total_items} />}
+      {cart ? (
+        <Navbar totalItems={cart.total_items} />
+      ) : (
+        "Loading Cart Contents..."
+      )}
       <Router>
         <Routes>
           {/* Home Page */}
@@ -98,6 +103,7 @@ function App() {
               />
             }
           />
+          <Route path="/checkout" element={<Checkout />}></Route>
         </Routes>
       </Router>
     </div>

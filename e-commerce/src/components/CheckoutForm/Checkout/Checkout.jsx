@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
 import {
@@ -11,21 +11,45 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
-
+import commerce from "../../../lib/commerce";
 import { styles } from "./styles";
 const steps = ["Shipping adress", "Payment details"];
 const Confirmation = () => <div>confirmation</div>;
 
-const Checkout = () => {
+const Checkout = ({ cart }) => {
   const [activeStep, setActiveStep] = useState(0);
+  const [checkoutToken, setCheckoutToken] = useState(null);
   const classes = { ...styles };
 
-  const Form = () => (activeStep === 0 ? <AddressForm /> : <PaymentForm />);
+  useEffect(() => {
+    const generateToken = async () => {
+      try {
+        if (cart) {
+          // Fetch token from commerce
+          const token = await commerce.checkout.generateToken(cart.id, {
+            type: "cart",
+          });
+          console.log("token", token);
+          setCheckoutToken({ ...token });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    generateToken();
+  }, [cart]);
+
+  const Form = () =>
+    activeStep === 0 ? (
+      <AddressForm checkoutToken={checkoutToken} />
+    ) : (
+      <PaymentForm />
+    );
   return (
     <>
-      <div sx={{ ...styles.toolbar }} className={classes.toolbar}>
-        <main sx={{ ...styles.layout }} className={classes.layout}>
-          <Paper sx={{ ...styles.paper }} className={classes.paper}>
+      <div sx={{ ...styles.toolbar }}>
+        <main sx={{ ...styles.layout }}>
+          <Paper sx={{ ...styles.paper }}>
             <Typography variant="h4" align="center">
               Checkout
             </Typography>
@@ -36,7 +60,11 @@ const Checkout = () => {
                 </Step>
               ))}
             </Stepper>
-            {activeStep === steps.length ? <Confirmation /> : <Form />}
+            {activeStep === steps.length ? (
+              <Confirmation />
+            ) : (
+              checkoutToken && <Form />
+            )}
           </Paper>
         </main>
       </div>

@@ -14,10 +14,23 @@ const AddressForm = ({ checkoutToken }) => {
   const [shippingOption, setShippingOption] = useState("");
   const methods = useForm();
 
-  ///destruct countries
+  ///destruct countries returns an array of an array
   const countries = Object.entries(shippingCountries).map(([code, name]) => ({
     id: code,
     label: name,
+  }));
+  ///country subdivision
+  const countrySubdivison = Object.entries(shippingSubdivisions).map(
+    ([code, name]) => ({
+      id: code,
+      label: name,
+    })
+  );
+  //shipping options
+
+  const options = shippingOptions.map((shipments) => ({
+    id: shipments.id,
+    label: `${shipments.description}-(${shipments.formatted_with_symbol})`,
   }));
 
   const hardCodedCountries = [
@@ -76,12 +89,37 @@ const AddressForm = ({ checkoutToken }) => {
     }
   };
 
+  // fetch shipping options
+
+  const fetchShippingOptions = async (checkoutTokenId, country, region) => {
+    try {
+      const options = await commerce.checkout.getShippingOptions(
+        checkoutTokenId,
+        { country, region }
+      );
+      console.log("options", options, "options");
+      setShippingOptions(options);
+      setShippingOption(options[0].id);
+    } catch (error) {
+      console.log(error, "Failed to load shipping options");
+    }
+  };
+
   useEffect(() => {
     fetchShippingCountries(checkoutToken.id);
   }, []);
   useEffect(() => {
     if (shippingCountry) fetchSubdivisions(shippingCountry);
   }, [shippingCountry]);
+
+  useEffect(() => {
+    if (shippingSubdivision)
+      fetchShippingOptions(
+        checkoutToken.id,
+        shippingCountry,
+        shippingSubdivision
+      );
+  }, [shippingSubdivision]);
 
   return (
     <>
@@ -117,14 +155,40 @@ const AddressForm = ({ checkoutToken }) => {
             </Grid>
             <Grid type xs={12} sm={6}>
               <InputLabel>Shipping Subdivision</InputLabel>
-              <Select fullWidth>
-                <MenuItem>United States of America </MenuItem>
+              <Select
+                fullWidth
+                value={shippingSubdivision}
+                onChange={(e) => setShippingSubdivision(e.target.value)}
+              >
+                {/* Map Through The Subdivisions */}
+                {countrySubdivison && countrySubdivison > 0 ? (
+                  countrySubdivison.map((subdivision) => (
+                    <MenuItem key={subdivision.id} value={subdivision.id}>
+                      {subdivision.label}{" "}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <HardCodedCountries />
+                )}
               </Select>
             </Grid>
             <Grid type xs={12} sm={6}>
               <InputLabel>Shipping Options</InputLabel>
-              <Select fullWidth>
+              <Select
+                fullWidth
+                value={shippingOption}
+                onChange={() => setShippingOption(e.target.value)}
+              >
                 <MenuItem>United States of America </MenuItem>
+                {options && options > 0 ? (
+                  options.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.label}{" "}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <HardCodedCountries />
+                )}
               </Select>
             </Grid>
           </Grid>
